@@ -9,7 +9,17 @@ const log = (data) => {
   
   console.log(`${d.toISOString()}${str}`)
 }
+
+app.use((req, res, next) => {
+  if (!req.headers['x-shared-shopper-secret']) {
+    log({error: 'Es wurde kein x-shared-shopper-secret angegeben'})
+    return res.status(403).send({msg: 'error'})// fucksendStatus(403)
+  }
+  return next()
+})
+
 app.use(express.json({limit: '20mb'}))
+
 app.use((req, _, next) => {
   log({url: req.url, body: JSON.stringify(req.body)})
   next()
