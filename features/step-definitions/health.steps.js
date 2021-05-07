@@ -22,8 +22,8 @@ When('health ohne x-shared-shopper-secret aufgerufen wird', async () => {
   }
 })
 
-Then('wird der HTTP-Code {string} zurück gegeben', async (httpCode) => {
-  expect(this.lastStatus).to.equal(parseInt(httpCode))
+Then('schlägt der health-aufruf fehl', async () => {
+  expect(this.lastStatus).to.equal(403)
 })
 
 When('health aufgerufen wird', async () => {

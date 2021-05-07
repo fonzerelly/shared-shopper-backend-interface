@@ -58,7 +58,7 @@ Given('der Kunde hat sich freigeschalten', descriptiveStep)
 const initLoginData = (self) => {
   if (!self.loginData) {
     self.loginData = {}
-  }
+    }
 }
 
 When('der Kunde sich mit seinem Passwort anmeldet', async () => {

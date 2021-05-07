@@ -2,7 +2,7 @@
 Funktionalität: health endpoint
   Szenario: Als Dozent möchte ich sicher sein, dass die API nur von meinen Studenten genutzt wird
     Wenn health ohne x-shared-shopper-secret aufgerufen wird
-    Dann wird der HTTP-Code '403' zurück gegeben
+    Dann schlägt der health-aufruf fehl
 
  
   Szenario: Als Entwickler möchte ich den groben Zustand des Backends auf einen Blick einsehen können

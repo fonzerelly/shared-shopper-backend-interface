@@ -50,8 +50,9 @@ app.get('/validate/:validateToken', (req, res) => {
   res.sendStatus(200)
 })
 
+let accessToken
 app.post('/login', (req, res) => {
-  const accessToken = String(Math.ceil(Math.random()*10000000))
+  accessToken = String(Math.ceil(Math.random()*10000000))
   log({message: `User ${req.body.email} ist eingeloggt und verwendet den accessToken ${accessToken}.`})
   res.send({
     accessToken
