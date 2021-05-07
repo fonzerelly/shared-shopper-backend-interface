@@ -58,5 +58,23 @@ app.post('/login', (req, res) => {
     accessToken
   })
 })
+
+const router = express.Router()
+router.use((req, res, next) => {
+  if (req.headers.authorization === accessToken) {
+    return next()
+  }
+  res.sendStatus(401)
+})
+
+const db = {
+  'Weihnachtsessen': {},
+  'Sylvesterparty': {}
+}
+router.get('/overview', (req, res) => {
+  res.sendStatus(200)
+})
+
+app.use('/', router)
  
 app.listen(3000)
