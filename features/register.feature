@@ -10,10 +10,10 @@ Funktionalität: register- / validate-endpoint
     Dann wird ein Transaktionsvorgang mit dem Token angelegt
     Und im Hintergrund eine Email mit dem verify-link an die email adresse gesendet
 
-#   Szenario: Als Kunde möchte ich meine registrierung bestätigen
-#     Angenommen der Kunde hat sich zuvor registriert
-#     Wenn validate mit dem Token aufgerufen wird
-#     Dann wird der login für den Kunden freigeschalten
+  Szenario: Als Kunde möchte ich meine Registrierung bestätigen
+    Angenommen der Kunde hat sich zuvor registriert
+    Wenn validate mit dem Token aufgerufen wird
+    Dann wird der login für den Kunden freigeschalten
 
 #   Szenario: Als Entwickler möchte ich erkennen, falls ich einen falschen Validierungstoken verwende
 #     Angenommen der Kunde hat sich zuvor registriert

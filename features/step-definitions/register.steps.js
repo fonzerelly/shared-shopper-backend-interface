@@ -5,6 +5,7 @@ const {
 } = require('@cucumber/cucumber')
 
 const {
+  get,
   post
 } = require('axios').default
 
@@ -17,6 +18,8 @@ const initRegisterData = (self) => {
     self.registerData = {}
   }
 }
+
+const descriptiveStep = () => {}
 
 Given('wir kennen das nächste Validierungstoken', function () {
   initRegisterData(this)
@@ -42,6 +45,12 @@ Then('wird ein Transaktionsvorgang mit dem Token angelegt', function () {
   expect(this.registerData.registerResult).to.equal(200)
 });
 
-Then('im Hintergrund eine Email mit dem verify-link an die email adresse gesendet', function () {
-  //Dieser ist nur beschreibender Natur
+Then('im Hintergrund eine Email mit dem verify-link an die email adresse gesendet', descriptiveStep);
+
+Given('der Kunde hat sich zuvor registriert', descriptiveStep);
+
+When('validate mit dem Token aufgerufen wird', async () => {
+  await get('http://localhost:3000/validate/123abc456')  
 });
+
+Then('wird der login für den Kunden freigeschalten', descriptiveStep);
