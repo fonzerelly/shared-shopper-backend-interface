@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx cucumber-js features/**/*.feature",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "npm start && nodemon . "
   },
   "keywords": [],
   "author": "",
