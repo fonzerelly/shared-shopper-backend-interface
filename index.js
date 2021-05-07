@@ -32,7 +32,7 @@ app.get('/health', function (req, res) {
   })
 })
 
-app.post('/register', function (req, res) {
+app.post('/register', (req, res) => {
   if (!req.body.email || !req.body.password) {
     log({
       error: `Der Payload erfüllt nicht das interface!`
@@ -44,9 +44,18 @@ app.post('/register', function (req, res) {
   })
   res.sendStatus(200)
 })
+
 app.get('/validate/:validateToken', (req, res) => {
   log({message: `Die Registrierung, die sich hinter ${req.params.validateToken} verbirgt wurde freigeschalten`})
   res.sendStatus(200)
+})
+
+app.post('/login', (req, res) => {
+  const accessToken = String(Math.ceil(Math.random()*10000000))
+  log({message: `User ${req.body.email} ist eingeloggt und verwendet den accessToken ${accessToken}.`})
+  res.send({
+    accessToken
+  })
 })
  
 app.listen(3000)

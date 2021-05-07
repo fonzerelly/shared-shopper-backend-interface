@@ -21,16 +21,6 @@ const initRegisterData = (self) => {
 
 const descriptiveStep = () => {}
 
-Given('wir kennen das nächste Validierungstoken', async () => {
-  initRegisterData(this)
-  this.registerData.validierungsToken = '123'
-});
-
-Given('wir kennen das nächste Zugriffstoken', async () => {
-  initRegisterData(this)
-  this.registerData.zugriffsToken = '456'
-});
-
 When('register mit einer validen email und einem validen passwort aufgerufen wird', async () => {
   initRegisterData(this)
   const registerResponse = await post('http://localhost:3000/register', {
@@ -62,3 +52,30 @@ When('validate mit dem Token aufgerufen wird', async () => {
 });
 
 Then('wird der login für den Kunden freigeschalten', descriptiveStep);
+
+Given('der Kunde hat sich freigeschalten', descriptiveStep)
+
+const initLoginData = (self) => {
+  if (!self.loginData) {
+    self.loginData = {}
+  }
+}
+
+When('der Kunde sich mit seinem Passwort anmeldet', async () => {
+  initLoginData(this)
+  const loginResponse = await post('http://localhost:3000/login', {
+    email: 'hab@ich.net',
+    password: '11aaBB!!'
+  },{
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET'
+    }
+  })
+  this.loginData.status = await loginResponse.status
+  this.loginData.accessToken = await loginResponse.data.accessToken
+});
+
+Then('erhält der Kunde das Zugriffstoken', async () => {
+  expect(this.loginData.status).to.equal(200)
+  expect(this.loginData.accessToken).not.to.be.undefined
+});
