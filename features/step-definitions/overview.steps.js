@@ -30,7 +30,7 @@ Given('der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt'
 
 Given('der User verwendet einen ungültigen accessToken', async () => {
   initOverviewData(this)
-  this.overviewData.invalidAccessToken = 
+  this.overviewData.accessToken =
     this.overviewData.accessToken
       .split('')
       .reverse()
@@ -42,11 +42,12 @@ When('der User die Liste aller seiner Einkaufszetten einsehen will', async () =>
   try {
     const response = await get('http://localhost:3000/overview', {
       headers: {
-        accessToken: this.overviewData.invalidAccessToken,
+        authorization: this.overviewData.accessToken,
         'x-shared-shopper-secret': 'FAKE_SECRET'
       }
     })
     this.lastStatus = await response.status
+    this.result = await response.data
   } catch (error) {
     this.lastStatus = error.response.status
   }
@@ -55,3 +56,8 @@ When('der User die Liste aller seiner Einkaufszetten einsehen will', async () =>
 Then('schlägt der overview-Aufruf fehl', async () => {
   expect(this.lastStatus).to.equal(401)
 })
+
+Then('sieht er die Titel aller seiner Einkaufszettel', async () => {
+  expect(this.lastStatus).to.equal(200)
+  expect(this.result.shoppingLists.length).to.greaterThan(0)
+});

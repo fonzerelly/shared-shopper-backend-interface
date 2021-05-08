@@ -64,7 +64,7 @@ router.use((req, res, next) => {
   if (req.headers.authorization === accessToken) {
     return next()
   }
-  res.sendStatus(401)
+  return res.sendStatus(401)
 })
 
 const db = {
@@ -72,7 +72,7 @@ const db = {
   'Sylvesterparty': {}
 }
 router.get('/overview', (req, res) => {
-  res.sendStatus(200)
+  res.send({shoppingLists: Object.keys(db)})
 })
 
 app.use('/', router)
