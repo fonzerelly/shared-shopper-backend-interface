@@ -15,9 +15,9 @@ Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
     Wenn der User die Liste aller seiner Einkaufszetten einsehen will
     Dann sieht er die Titel aller seiner Einkaufszettel
 
-  # Szenario: Als User möchte ich einen alten Einkaufszettel löschen können
-  #   Wenn der User einen Einkaufszettel löscht
-  #   Dann taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen
+  Szenario: Als User möchte ich einen alten Einkaufszettel löschen können
+    Wenn der User einen Einkaufszettel löscht
+    Dann taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen
 
   # Szenario: Als User möchte ich einen neuen Einkaufszettel anlegen können
   #   Wenn der User einen neuen Einkaufszettel anlegt

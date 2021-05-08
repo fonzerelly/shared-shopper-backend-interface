@@ -1,18 +1,15 @@
 const {Given, When, Then} = require('@cucumber/cucumber')
 
-const {post, get} = require('axios')
-const { expect } = require('chai')
+const axios = require('axios')
+const get = axios.get
+const post = axios.post
+const del = axios.delete
 
-const initOverviewData = (self) => {
-  if (!self.overviewData) {
-    self.overviewData = {}
-  }
-}
+const { expect } = require('chai')
 
 const descriptiveStep = () => {}
 
 Given('der User hat sich erfolgreich eingeloggt', async () =>{
-  initOverviewData(this)
   const loginResponse = await post('http://localhost:3000/login',{
     email: 'hab@ich.net',
     password: 'll11OO!!'
@@ -21,7 +18,7 @@ Given('der User hat sich erfolgreich eingeloggt', async () =>{
       'x-shared-shopper-secret': 'FAKE_SECRET'
     }
   })
-  this.overviewData.accessToken = await loginResponse.data.accessToken
+  this.accessToken = await loginResponse.data.accessToken
 });
 
 
@@ -29,9 +26,8 @@ Given('der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt'
 
 
 Given('der User verwendet einen ungültigen accessToken', async () => {
-  initOverviewData(this)
-  this.overviewData.accessToken =
-    this.overviewData.accessToken
+  this.accessToken =
+    this.accessToken
       .split('')
       .reverse()
       .join('')
@@ -42,7 +38,7 @@ When('der User die Liste aller seiner Einkaufszetten einsehen will', async () =>
   try {
     const response = await get('http://localhost:3000/overview', {
       headers: {
-        authorization: this.overviewData.accessToken,
+        authorization: this.accessToken,
         'x-shared-shopper-secret': 'FAKE_SECRET'
       }
     })
@@ -61,3 +57,35 @@ Then('sieht er die Titel aller seiner Einkaufszettel', async () => {
   expect(this.lastStatus).to.equal(200)
   expect(this.result.shoppingLists.length).to.greaterThan(0)
 });
+
+When('der User einen Einkaufszettel löscht', async () => {
+  const response = await get('http://localhost:3000/overview', {
+    headers: {
+      authorization: this.accessToken,
+      'x-shared-shopper-secret': 'FAKE_SECRET'
+    }
+  })
+  const lists = await response.data.shoppingLists
+  this.deletedId = lists[0].id
+  expect(this.deletedId).not.to.be.undefined
+  await del(`http://localhost:3000/overview/${this.deletedId}`, {
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      authorization: this.accessToken
+    }
+  })
+});
+
+
+Then('taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen', async () => {
+  const response = await get('http://localhost:3000/overview', {
+    headers: {
+      authorization: this.accessToken,
+      'x-shared-shopper-secret': 'FAKE_SECRET'
+    }
+  })
+  const lists = await response.data.shoppingLists;
+  const deletedId = this.deletedId
+  expect(lists.find(list => list.id === deletedId)).to.be.undefined
+});
+

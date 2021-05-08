@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(express.json({limit: '20mb'}))
 
 app.use((req, _, next) => {
-  log({url: req.url, body: JSON.stringify(req.body)})
+  log({method: req.method, url: req.url, body: JSON.stringify(req.body)})
   next()
 })
 
@@ -51,9 +51,23 @@ app.get('/validate/:validateToken', (req, res) => {
 })
 
 let accessToken
+let db
 app.post('/login', (req, res) => {
   accessToken = String(Math.ceil(Math.random()*10000000))
+  db = {
+    shoppingLists: [
+      {
+        id: 0,
+        name: 'Weihnachtsessen'
+      },
+      {
+        id: 1,
+        name: 'Sylvesterparty'
+      }
+    ]
+  }
   log({message: `User ${req.body.email} ist eingeloggt und verwendet den accessToken ${accessToken}.`})
+  log({message: `Datenbank mit ${db.shoppingLists.length} Einträgen wurde geladen.`})
   res.send({
     accessToken
   })
@@ -64,15 +78,19 @@ router.use((req, res, next) => {
   if (req.headers.authorization === accessToken) {
     return next()
   }
+  log({error: 'Es wurde kein authorization header angegeben.'})
   return res.sendStatus(401)
 })
 
-const db = {
-  'Weihnachtsessen': {},
-  'Sylvesterparty': {}
-}
 router.get('/overview', (req, res) => {
-  res.send({shoppingLists: Object.keys(db)})
+  res.send(db)
+})
+router.delete('/overview/:listId', (req, res) => {
+  const idToDelete = parseInt(req.params.listId, 10)
+  db.shoppingLists = db.shoppingLists.filter((list) => {
+    return list.id !== idToDelete
+  })
+  res.sendStatus(200)
 })
 
 app.use('/', router)
