@@ -89,3 +89,27 @@ Then('taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufe
   expect(lists.find(list => list.id === deletedId)).to.be.undefined
 });
 
+When('der User einen neuen Einkaufszettel anlegt', async () => {
+  this.newShoppingListName = new Date().toISOString()
+  await post('http://localhost:3000/overview/add', {
+    name: this.newShoppingListName
+  }, {
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      authorization: this.accessToken
+    }
+  })
+});
+
+Then('taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel auf', async () => {
+  const response = await get('http://localhost:3000/overview', {
+    headers: {
+      authorization: this.accessToken,
+      'x-shared-shopper-secret': 'FAKE_SECRET'
+    }
+  })
+  const lists = await response.data.shoppingLists;
+
+  const newShoppingListName = this.newShoppingListName
+  expect(lists.find((list) => list.name === newShoppingListName)).not.to.be.undefined
+});

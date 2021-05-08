@@ -1,5 +1,5 @@
 # language : de
-
+@focus
 Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
 
   Grundlage:
@@ -19,6 +19,6 @@ Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
     Wenn der User einen Einkaufszettel löscht
     Dann taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen
 
-  # Szenario: Als User möchte ich einen neuen Einkaufszettel anlegen können
-  #   Wenn der User einen neuen Einkaufszettel anlegt
-  #   Dann taucht der Teitel des Einkaufszettel in der Übersicht der Einkaufszettel auf
+  Szenario: Als User möchte ich einen neuen Einkaufszettel anlegen können
+    Wenn der User einen neuen Einkaufszettel anlegt
+    Dann taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel auf

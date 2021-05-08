@@ -85,11 +85,22 @@ router.use((req, res, next) => {
 router.get('/overview', (req, res) => {
   res.send(db)
 })
+
 router.delete('/overview/:listId', (req, res) => {
   const idToDelete = parseInt(req.params.listId, 10)
   db.shoppingLists = db.shoppingLists.filter((list) => {
     return list.id !== idToDelete
   })
+  res.sendStatus(200)
+})
+
+router.post('/overview/add', (req, res) => {
+  const newId = Math.ceil(Math.random() * 100)
+  db.shoppingLists.push({
+    id: newId,
+    name: req.body.name
+  })
+  log({message: `Es wurde ein neuer Einkaufszettel mit der id ${newId} angelegt.`})
   res.sendStatus(200)
 })
 
