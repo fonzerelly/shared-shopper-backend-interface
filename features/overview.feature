@@ -3,7 +3,7 @@
 Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
 
   Grundlage:
-  Angenommen der User hat sich erfolgreich eingeloggt
+  Angenommen der User hat sich eingeloggt um mit der Übersicht zu arbeiten
   Angenommen der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt
 
   Szenario: Als User möchte ich sicher sein, dass nur ich meine Inhalte sehen kann

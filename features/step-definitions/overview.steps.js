@@ -7,18 +7,12 @@ const del = axios.delete
 
 const { expect } = require('chai')
 
+const { login, createShoppingList } = require('../helpers/shoppinglist')
+
 const descriptiveStep = () => {}
 
-Given('der User hat sich erfolgreich eingeloggt', async () =>{
-  const loginResponse = await post('http://localhost:3000/login',{
-    email: 'hab@ich.net',
-    password: 'll11OO!!'
-  }, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
-  })
-  this.accessToken = await loginResponse.data.accessToken
+Given('der User hat sich eingeloggt um mit der Übersicht zu arbeiten', async () =>{
+  await login(this)
 });
 
 
@@ -90,15 +84,7 @@ Then('taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufe
 });
 
 When('der User einen neuen Einkaufszettel anlegt', async () => {
-  this.newShoppingListName = new Date().toISOString()
-  await post('http://localhost:3000/overview/add', {
-    name: this.newShoppingListName
-  }, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: this.accessToken
-    }
-  })
+  await createShoppingList(this)
 });
 
 Then('taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel auf', async () => {
@@ -108,8 +94,7 @@ Then('taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel a
       'x-shared-shopper-secret': 'FAKE_SECRET'
     }
   })
-  const lists = await response.data.shoppingLists;
-
-  const newShoppingListName = this.newShoppingListName
-  expect(lists.find((list) => list.name === newShoppingListName)).not.to.be.undefined
+  const lists = await response.data.shoppingLists
+  const lastNewId = this.lastNewShoppingList.id
+  expect(lists.find((list) => list.id === lastNewId)).not.to.be.undefined
 });

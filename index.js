@@ -13,6 +13,8 @@ const log = (data) => {
 
 app.use(cors())
 
+app.use(express.json({limit: '20mb'}))
+
 app.use((req, res, next) => {
   if (!req.headers['x-shared-shopper-secret']) {
     log({error: 'Es wurde kein x-shared-shopper-secret angegeben'})
@@ -20,10 +22,6 @@ app.use((req, res, next) => {
   }
   return next()
 })
-
-
-
-app.use(express.json({limit: '20mb'}))
 
 app.use((req, _, next) => {
   log({method: req.method, url: req.url, body: JSON.stringify(req.body)})
@@ -63,11 +61,40 @@ app.post('/login', (req, res) => {
     shoppingLists: [
       {
         id: 0,
-        name: 'Weihnachtsessen'
+        name: 'Weihnachtsessen',
+        content: [
+          {
+            id: 1000,
+            label: 'Klosteig',
+            count: 3
+          },
+          {
+            id: 1001,
+            label: 'Gans',
+            count: 1
+          }
+        ]
       },
       {
         id: 1,
-        name: 'Sylvesterparty'
+        name: 'Sylvesterparty',
+        content: [
+          {
+            id: 2000,
+            label: 'Brötchen',
+            count: 15
+          },
+          {
+            id: 2001,
+            label: 'Salamie',
+            count: 2
+          },
+          {
+            id: 2002,
+            label: 'Reibekäse',
+            count: 2
+          },
+        ]
       }
     ]
   }
@@ -101,12 +128,22 @@ router.delete('/overview/:listId', (req, res) => {
 
 router.post('/overview/add', (req, res) => {
   const newId = Math.ceil(Math.random() * 100)
-  db.shoppingLists.push({
+  const newList = {
     id: newId,
     name: req.body.name
-  })
+  }
+
+  db.shoppingLists.push(newList)
   log({message: `Es wurde ein neuer Einkaufszettel mit der id ${newId} angelegt.`})
-  res.sendStatus(200)
+  res.send(newList)
+})
+
+router.get('/shoppinglist/:shoppingListId', (req, res) => {
+  const id = parseInt(req.params.shoppingListId, 10)
+  const shoppingList = db.shoppingLists.find((list) => {
+    return list.id === id
+  })
+  res.send(shoppingList.content)
 })
 
 app.use('/', router)
