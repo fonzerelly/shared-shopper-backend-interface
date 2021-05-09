@@ -7,7 +7,8 @@ const {
   createShoppingList,
   readShoppingList,
   createShoppingListEntry,
-  removeShoppingListEntry
+  removeShoppingListEntry,
+  moveUpShoppingListEntry
 } = require('../helpers/shoppinglist')
 
 Given('der User hat sich eingeloggt um einen Einkaufszettel zu manipulieren', async () => {
@@ -40,4 +41,19 @@ Given('der User hat den neuen Einkaufszettel um einen Eintrag ergänzt', async (
 
 When('der User den neuen Eintrag wieder löscht', async () => {
   await removeShoppingListEntry(this)
+});
+
+Given('der User den neuen Einkaufszettel um zwei Einträge ergänzt', async () => {
+  await createShoppingListEntry(this, 'Kaba')
+  await createShoppingListEntry(this, 'Milch')
+});
+
+When('der User den zweiten Eintrag nach oben schiebt', async () => {
+  await moveUpShoppingListEntry(this)
+});
+
+Then('ist dieser Eintrag der erste in der Liste', async () => {
+  const Kaba = this.lastNewShoppingListContent.find((entry) => entry.label ==='Kaba')
+  const Milch = this.lastNewShoppingListContent.find((entry) => entry.label ==='Milch')
+  expect(Milch.position).to.be.lessThan(Kaba.position)
 });

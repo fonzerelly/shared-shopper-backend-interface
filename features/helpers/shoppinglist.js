@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { post, get } = axios
+const { post, get, put } = axios
 const del = axios.delete
 
 const login = async (self) => {
@@ -37,9 +37,9 @@ const readShoppingList = async (self) => {
   self.lastNewShoppingListContent = await response.data
 }
 
-const createShoppingListEntry = async (self) => {
+const createShoppingListEntry = async (self, label = 'Kaffe') => {
   const response = await post (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/add`, {
-    label: 'Kaffe',
+    label,
     count: 1
   }, {
     headers: {
@@ -59,10 +59,20 @@ const removeShoppingListEntry = async (self) => {
   })
 }
 
+const moveUpShoppingListEntry = async (self) => {
+  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${self.lastNewShoppingListEntry.id}/moveUp`, null, {
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      authorization: self.accessToken
+    }
+  })
+}
+
 module.exports = {
   login,
   createShoppingList,
   readShoppingList,
   createShoppingListEntry,
   removeShoppingListEntry,
+  moveUpShoppingListEntry
 }

@@ -66,12 +66,14 @@ app.post('/login', (req, res) => {
           {
             id: 1000,
             label: 'Klosteig',
-            count: 3
+            count: 3,
+            position: 0
           },
           {
             id: 1001,
             label: 'Gans',
-            count: 1
+            count: 1,
+            position: 1
           }
         ]
       },
@@ -82,17 +84,20 @@ app.post('/login', (req, res) => {
           {
             id: 2000,
             label: 'Brötchen',
-            count: 15
+            count: 15,
+            position: 0
           },
           {
             id: 2001,
             label: 'Salamie',
-            count: 2
+            count: 2,
+            position: 1
           },
           {
             id: 2002,
             label: 'Reibekäse',
-            count: 2
+            count: 2,
+            position: 2
           },
         ]
       }
@@ -155,11 +160,12 @@ router.post('/shoppinglist/:shoppingListId/add', (req, res) => {
   const shoppingList = findShoppingList(id)
   const newEntry = {
     ... req.body,
-    id : Math.ceil(Math.random()*1000)
+    id : Math.ceil(Math.random()*1000),
+    position: shoppingList.content.length
   }
   shoppingList.content.push(newEntry)
   log({message: `Es wurde ein neuer Einkaufszetteleintrag mit der id ${newEntry.id} angelegt.`})
-  res.send(shoppingList.content)
+  res.send(newEntry)
 })
 
 router.delete('/shoppinglist/:shoppingListId/:entryId', (req, res) => {
@@ -167,8 +173,23 @@ router.delete('/shoppinglist/:shoppingListId/:entryId', (req, res) => {
   const entryId = parseInt(req.params.entryId, 10)
   const shoppingList = findShoppingList(shoppingListId)
 
-  shoppingList.content = shoppingList.content.filter((entry) => entry.id === entryId)
+  shoppingList.content = shoppingList.content.filter((entry) => entry.id !== entryId)
   log({message: `Der Eintrag mit der id ${entryId} wurde gelöscht.`})
+  res.sendStatus(200)
+})
+
+const findEntry = (list, id) => list.find((entry) => entry.id === id)
+const findPosition = (list, pos) => list.find((entry) => entry.position === pos)
+router.put('/shoppinglist/:shoppingListId/:entryId/moveUp', (req, res) => {
+  const shoppingListId = parseInt(req.params.shoppingListId, 10)
+  const entryId = parseInt(req.params.entryId, 10)
+  const shoppingList = findShoppingList(shoppingListId)
+
+  const lowerEntry = findEntry(shoppingList.content, entryId)
+  const upperEntry = findPosition(shoppingList.content, lowerEntry.position - 1)
+  lowerEntry.position -= 1
+  upperEntry.position += 1
+
   res.sendStatus(200)
 })
 
