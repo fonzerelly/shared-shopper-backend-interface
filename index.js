@@ -130,7 +130,8 @@ router.post('/overview/add', (req, res) => {
   const newId = Math.ceil(Math.random() * 100)
   const newList = {
     id: newId,
-    name: req.body.name
+    name: req.body.name,
+    content: []
   }
 
   db.shoppingLists.push(newList)
@@ -143,6 +144,20 @@ router.get('/shoppinglist/:shoppingListId', (req, res) => {
   const shoppingList = db.shoppingLists.find((list) => {
     return list.id === id
   })
+  res.send(shoppingList.content)
+})
+
+router.post('/shoppinglist/:shoppingListId/add', (req, res) => {
+  const id = parseInt(req.params.shoppingListId, 10)
+  const shoppingList = db.shoppingLists.find((list) => {
+    return list.id === id
+  })
+  const newEntry = {
+    ... req.body,
+    id : Math.ceil(Math.random()*1000)
+  }
+  log({message: `Es wurde ein neuer Einkaufszetteleintrag mit der id ${newEntry.id} angelegt.`})
+  shoppingList.content.push(newEntry)
   res.send(shoppingList.content)
 })
 

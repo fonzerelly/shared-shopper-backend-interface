@@ -2,7 +2,7 @@ const {Given, When, Then} = require('@cucumber/cucumber')
 
 const {expect} = require('chai')
 
-const {login, createShoppingList, readShoppingList} = require('../helpers/shoppinglist')
+const {login, createShoppingList, readShoppingList, createShoppingListEntry} = require('../helpers/shoppinglist')
 
 Given('der User hat sich eingeloggt um einen Einkaufszettel zu manipulieren', async () => {
   await login(this)
@@ -16,8 +16,15 @@ When('der User sich den neuen Einkaufszettel anzeigen lässt', async () => {
   await readShoppingList(this)
 });
 
-
 Then('ist der Einkaufszettel leer', async () => {
   expect(this.lastNewShoppingListContent.length).to.equal(0)
+});
+
+When('der User den neuen Einkaufszettel um einen Eintrag ergänzt', async () => {
+  await createShoppingListEntry(this)
+});
+
+Then('enthält der Einkaufszettel einen Eintrag', async () => {
+  expect(this.lastNewShoppingListContent.length).to.equal(1)
 });
 
