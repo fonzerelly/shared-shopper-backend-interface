@@ -147,18 +147,29 @@ router.get('/shoppinglist/:shoppingListId', (req, res) => {
   res.send(shoppingList.content)
 })
 
+
+const findShoppingList = (id) => db.shoppingLists.find((list) => list.id === id)
+
 router.post('/shoppinglist/:shoppingListId/add', (req, res) => {
   const id = parseInt(req.params.shoppingListId, 10)
-  const shoppingList = db.shoppingLists.find((list) => {
-    return list.id === id
-  })
+  const shoppingList = findShoppingList(id)
   const newEntry = {
     ... req.body,
     id : Math.ceil(Math.random()*1000)
   }
-  log({message: `Es wurde ein neuer Einkaufszetteleintrag mit der id ${newEntry.id} angelegt.`})
   shoppingList.content.push(newEntry)
+  log({message: `Es wurde ein neuer Einkaufszetteleintrag mit der id ${newEntry.id} angelegt.`})
   res.send(shoppingList.content)
+})
+
+router.delete('/shoppinglist/:shoppingListId/:entryId', (req, res) => {
+  const shoppingListId = parseInt(req.params.shoppingListId, 10)
+  const entryId = parseInt(req.params.entryId, 10)
+  const shoppingList = findShoppingList(shoppingListId)
+
+  shoppingList.content = shoppingList.content.filter((entry) => entry.id === entryId)
+  log({message: `Der Eintrag mit der id ${entryId} wurde gelöscht.`})
+  res.sendStatus(200)
 })
 
 app.use('/', router)

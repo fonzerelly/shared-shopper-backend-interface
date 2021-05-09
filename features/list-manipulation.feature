@@ -11,15 +11,16 @@ Funktionalität: Einkaufszettel manipulieren
   Wenn der User sich den neuen Einkaufszettel anzeigen lässt
   Dann ist der Einkaufszettel leer
 
-  @focus
   Szenario: Einen Eintrag im Einkaufszettel erstellen
   Wenn der User den neuen Einkaufszettel um einen Eintrag ergänzt
   Und der User sich den neuen Einkaufszettel anzeigen lässt
   Dann enthält der Einkaufszettel einen Eintrag
 
+  @focus
   Szenario: Einen Eintrag im Einkaufszettel löschen
   Angenommen der User hat den neuen Einkaufszettel um einen Eintrag ergänzt
   Wenn der User den neuen Eintrag wieder löscht
+  Und der User sich den neuen Einkaufszettel anzeigen lässt
   Dann ist der Einkaufszettel leer
 
   Szenario: Einen Eintrag im Einkaufszettel nach oben schieben
