@@ -1,5 +1,4 @@
 # language : de
-@focus
 Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
 
   Grundlage:

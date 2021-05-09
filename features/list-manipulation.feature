@@ -34,8 +34,8 @@ Funktionalität: Einkaufszettel manipulieren
   Und der User sich den neuen Einkaufszettel anzeigen lässt
   Dann sind die Plätze beider Einträge vertauscht
 
-  # Szenario: Markierung eines Eintrags im Einkaufszettel ändern
-  # Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
-  # Wenn der User den zweiten Eintrag markiert
-  # Und der User sich den neuen Einkaufszettel anzeigen lässt
-  # Dann ist dieser Eintrag an letzter Stelle
+  Szenario: Markierung eines Eintrags im Einkaufszettel ändern
+  Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
+  Wenn der User den zweiten Eintrag markiert
+  Und der User sich den neuen Einkaufszettel anzeigen lässt
+  Dann ist dieser Eintrag markiert

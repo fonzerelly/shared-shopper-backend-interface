@@ -77,6 +77,15 @@ const moveDownShoppingListEntry = async (self, id) => {
   })
 }
 
+const markShoppingListEntry = async (self, id) => {
+  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${id}/mark`, null, {
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      authorization: self.accessToken
+    }
+  })
+}
+
 module.exports = {
   login,
   createShoppingList,
@@ -84,5 +93,6 @@ module.exports = {
   createShoppingListEntry,
   removeShoppingListEntry,
   moveUpShoppingListEntry,
-  moveDownShoppingListEntry
+  moveDownShoppingListEntry,
+  markShoppingListEntry
 }

@@ -67,13 +67,15 @@ app.post('/login', (req, res) => {
             id: 1000,
             label: 'Klosteig',
             count: 3,
-            position: 0
+            position: 0,
+            marked: false
           },
           {
             id: 1001,
             label: 'Gans',
             count: 1,
-            position: 1
+            position: 1,
+            marked: false
           }
         ]
       },
@@ -85,19 +87,22 @@ app.post('/login', (req, res) => {
             id: 2000,
             label: 'Brötchen',
             count: 15,
-            position: 0
+            position: 0,
+            marked: false
           },
           {
             id: 2001,
             label: 'Salamie',
             count: 2,
-            position: 1
+            position: 1,
+            marked: false
           },
           {
             id: 2002,
             label: 'Reibekäse',
             count: 2,
-            position: 2
+            position: 2,
+            marked: false
           },
         ]
       }
@@ -161,7 +166,8 @@ router.post('/shoppinglist/:shoppingListId/add', (req, res) => {
   const newEntry = {
     ... req.body,
     id : Math.ceil(Math.random()*1000),
-    position: shoppingList.content.length
+    position: shoppingList.content.length,
+    marked: false
   }
   shoppingList.content.push(newEntry)
   log({message: `Es wurde ein neuer Einkaufszetteleintrag mit der id ${newEntry.id} angelegt.`})
@@ -203,6 +209,18 @@ router.put('/shoppinglist/:shoppingListId/:entryId/moveDown', (req, res) => {
   const lowerEntry = findPosition(shoppingList.content, upperEntry.position + 1)
   lowerEntry.position -= 1
   upperEntry.position += 1
+
+  res.sendStatus(200)
+})
+
+router.put('/shoppinglist/:shoppingListId/:entryId/mark', (req, res) => {
+  const shoppingListId = parseInt(req.params.shoppingListId, 10)
+  const entryId = parseInt(req.params.entryId, 10)
+  const shoppingList = findShoppingList(shoppingListId)
+
+  const entry = findEntry(shoppingList.content, entryId)
+
+  entry.marked = !entry.marked
 
   res.sendStatus(200)
 })

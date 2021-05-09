@@ -9,7 +9,8 @@ const {
   createShoppingListEntry,
   removeShoppingListEntry,
   moveUpShoppingListEntry,
-  moveDownShoppingListEntry
+  moveDownShoppingListEntry,
+  markShoppingListEntry
 } = require('../helpers/shoppinglist')
 
 Given('der User hat sich eingeloggt um einen Einkaufszettel zu manipulieren', async () => {
@@ -63,4 +64,15 @@ When('der User den ersten Eintrag nach unten schiebt', async () => {
   await readShoppingList(this)
   const firstEntry = this.lastNewShoppingListContent[0]
   await moveDownShoppingListEntry(this, firstEntry.id)
+});
+
+When('der User den zweiten Eintrag markiert', async () => {
+  await readShoppingList(this)
+  const firstEntry = this.lastNewShoppingListContent[0]
+  await markShoppingListEntry(this, firstEntry.id)
+});
+
+Then('ist dieser Eintrag markiert', async () => {
+  const firstEntry = this.lastNewShoppingListContent[0]
+  expect(firstEntry.marked).to.be.true
 });
