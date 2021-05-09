@@ -180,6 +180,7 @@ router.delete('/shoppinglist/:shoppingListId/:entryId', (req, res) => {
 
 const findEntry = (list, id) => list.find((entry) => entry.id === id)
 const findPosition = (list, pos) => list.find((entry) => entry.position === pos)
+
 router.put('/shoppinglist/:shoppingListId/:entryId/moveUp', (req, res) => {
   const shoppingListId = parseInt(req.params.shoppingListId, 10)
   const entryId = parseInt(req.params.entryId, 10)
@@ -187,6 +188,19 @@ router.put('/shoppinglist/:shoppingListId/:entryId/moveUp', (req, res) => {
 
   const lowerEntry = findEntry(shoppingList.content, entryId)
   const upperEntry = findPosition(shoppingList.content, lowerEntry.position - 1)
+  lowerEntry.position -= 1
+  upperEntry.position += 1
+
+  res.sendStatus(200)
+})
+
+router.put('/shoppinglist/:shoppingListId/:entryId/moveDown', (req, res) => {
+  const shoppingListId = parseInt(req.params.shoppingListId, 10)
+  const entryId = parseInt(req.params.entryId, 10)
+  const shoppingList = findShoppingList(shoppingListId)
+
+  const upperEntry = findEntry(shoppingList.content, entryId)
+  const lowerEntry = findPosition(shoppingList.content, upperEntry.position + 1)
   lowerEntry.position -= 1
   upperEntry.position += 1
 

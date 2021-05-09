@@ -26,10 +26,9 @@ Funktionalität: Einkaufszettel manipulieren
   Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
   Wenn der User den zweiten Eintrag nach oben schiebt
   Und der User sich den neuen Einkaufszettel anzeigen lässt
-  Dann ist dieser Eintrag der erste in der Liste
+  Dann ist dieser Eintrag an erster Stelle
 
-  # @wip
-  # Szenario: Einen Eintrag im Einkaufszettel nach unten schieben
-  # Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
-  # Wenn der User den ersten Eintrag nach unten schiebt
-  # Dann ist dieser Eintrag der letzte in der Liste
+  Szenario: Einen Eintrag im Einkaufszettel nach unten schieben
+  Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
+  Wenn der User den ersten Eintrag nach unten schiebt
+  Dann ist dieser Eintrag an letzter Stelle
