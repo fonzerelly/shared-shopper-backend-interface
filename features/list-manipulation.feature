@@ -26,9 +26,16 @@ Funktionalität: Einkaufszettel manipulieren
   Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
   Wenn der User den zweiten Eintrag nach oben schiebt
   Und der User sich den neuen Einkaufszettel anzeigen lässt
-  Dann ist dieser Eintrag an erster Stelle
+  Dann sind die Plätze beider Einträge vertauscht
 
   Szenario: Einen Eintrag im Einkaufszettel nach unten schieben
   Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
   Wenn der User den ersten Eintrag nach unten schiebt
-  Dann ist dieser Eintrag an letzter Stelle
+  Und der User sich den neuen Einkaufszettel anzeigen lässt
+  Dann sind die Plätze beider Einträge vertauscht
+
+  # Szenario: Markierung eines Eintrags im Einkaufszettel ändern
+  # Angenommen der User den neuen Einkaufszettel um zwei Einträge ergänzt
+  # Wenn der User den zweiten Eintrag markiert
+  # Und der User sich den neuen Einkaufszettel anzeigen lässt
+  # Dann ist dieser Eintrag an letzter Stelle

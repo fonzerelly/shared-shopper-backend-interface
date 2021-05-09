@@ -53,7 +53,7 @@ When('der User den zweiten Eintrag nach oben schiebt', async () => {
   await moveUpShoppingListEntry(this)
 });
 
-Then('ist dieser Eintrag an erster Stelle', async () => {
+Then('sind die Plätze beider Einträge vertauscht', async () => {
   const Kaba = this.lastNewShoppingListContent.find((entry) => entry.label ==='Kaba')
   const Milch = this.lastNewShoppingListContent.find((entry) => entry.label ==='Milch')
   expect(Milch.position).to.be.lessThan(Kaba.position)
@@ -63,10 +63,4 @@ When('der User den ersten Eintrag nach unten schiebt', async () => {
   await readShoppingList(this)
   const firstEntry = this.lastNewShoppingListContent[0]
   await moveDownShoppingListEntry(this, firstEntry.id)
-});
-
-Then('ist dieser Eintrag an letzter Stelle', async () => {
-  const Kaba = this.lastNewShoppingListContent.find((entry) => entry.label ==='Kaba')
-  const Milch = this.lastNewShoppingListContent.find((entry) => entry.label ==='Milch')
-  expect(Milch.position).to.be.greaterThan(Kaba.position)
 });
