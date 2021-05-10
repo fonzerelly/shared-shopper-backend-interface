@@ -1,6 +1,12 @@
-const {Given, When, Then} = require('@cucumber/cucumber')
+const {
+  Given,
+  When,
+  Then
+} = require('@cucumber/cucumber')
 
-const {expect} = require('chai')
+const {
+  expect
+} = require('chai')
 
 const {
   login,
@@ -10,7 +16,8 @@ const {
   removeShoppingListEntry,
   moveUpShoppingListEntry,
   moveDownShoppingListEntry,
-  markShoppingListEntry
+  markShoppingListEntry,
+  setShoppingListEntriesCount
 } = require('../helpers/shoppinglist')
 
 Given('der User hat sich eingeloggt um einen Einkaufszettel zu manipulieren', async () => {
@@ -55,8 +62,8 @@ When('der User den zweiten Eintrag nach oben schiebt', async () => {
 });
 
 Then('sind die Plätze beider Einträge vertauscht', async () => {
-  const Kaba = this.lastNewShoppingListContent.find((entry) => entry.label ==='Kaba')
-  const Milch = this.lastNewShoppingListContent.find((entry) => entry.label ==='Milch')
+  const Kaba = this.lastNewShoppingListContent.find((entry) => entry.label === 'Kaba')
+  const Milch = this.lastNewShoppingListContent.find((entry) => entry.label === 'Milch')
   expect(Milch.position).to.be.lessThan(Kaba.position)
 });
 
@@ -75,4 +82,13 @@ When('der User den zweiten Eintrag markiert', async () => {
 Then('ist dieser Eintrag markiert', async () => {
   const firstEntry = this.lastNewShoppingListContent[0]
   expect(firstEntry.marked).to.be.true
+});
+
+When('der User die Anzahl des Eintrags auf {int} setzt', async (newCount) => {
+  await setShoppingListEntriesCount(this, newCount)
+});
+
+Then('hat steht die Anzahl des Eintrags auf {int}', async (newCount) => {
+  const firstEntry = this.lastNewShoppingListContent[0]
+  expect(firstEntry.count).to.equal(newCount)
 });

@@ -225,6 +225,18 @@ router.put('/shoppinglist/:shoppingListId/:entryId/mark', (req, res) => {
   res.sendStatus(200)
 })
 
+router.put('/shoppinglist/:shoppingListId/:entryId/count', (req, res) => {
+  const shoppingListId = parseInt(req.params.shoppingListId, 10)
+  const entryId = parseInt(req.params.entryId, 10)
+  const shoppingList = findShoppingList(shoppingListId)
+
+  const entry = findEntry(shoppingList.content, entryId)
+
+  entry.count = req.body.newCount
+
+  res.sendStatus(200)
+})
+
 app.use('/', router)
  
 app.listen(3000)

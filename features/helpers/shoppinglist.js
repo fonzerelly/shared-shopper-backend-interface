@@ -86,6 +86,17 @@ const markShoppingListEntry = async (self, id) => {
   })
 }
 
+const setShoppingListEntriesCount = async (self, newCount) => {
+  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${self.lastNewShoppingListEntry.id}/count`, {
+    newCount
+  }, {
+    headers: {
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      authorization: self.accessToken
+    }
+  })
+}
+
 module.exports = {
   login,
   createShoppingList,
@@ -94,5 +105,6 @@ module.exports = {
   removeShoppingListEntry,
   moveUpShoppingListEntry,
   moveDownShoppingListEntry,
-  markShoppingListEntry
+  markShoppingListEntry,
+  setShoppingListEntriesCount
 }
