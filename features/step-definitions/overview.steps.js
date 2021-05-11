@@ -1,4 +1,4 @@
-const {Given, When, Then} = require('@cucumber/cucumber')
+const {Given, When, Then, Before} = require('@cucumber/cucumber')
 
 const axios = require('axios')
 const get = axios.get
@@ -10,6 +10,17 @@ const { expect } = require('chai')
 const { login, createShoppingList } = require('../helpers/shoppinglist')
 
 const descriptiveStep = () => {}
+
+const createHeaders = (accessToken) => ({
+  authorization: accessToken,
+  'x-shared-shopper-secret': 'FAKE_SECRET',
+  'Content-Type': 'application/json'
+})
+
+let scenarioLabel
+Before((scenario) => {
+  scenarioLabel = scenario.pickle.name
+})
 
 Given('der User hat sich eingeloggt um mit der Übersicht zu arbeiten', async () =>{
   await login(this)
@@ -31,10 +42,7 @@ Given('der User verwendet einen ungültigen accessToken', async () => {
 When('der User die Liste aller seiner Einkaufszetten einsehen will', async () => {
   try {
     const response = await get('http://localhost:3000/overview', {
-      headers: {
-        authorization: this.accessToken,
-        'x-shared-shopper-secret': 'FAKE_SECRET'
-      }
+      headers: createHeaders(this.accessToken)
     })
     this.lastStatus = await response.status
     this.result = await response.data
@@ -54,29 +62,20 @@ Then('sieht er die Titel aller seiner Einkaufszettel', async () => {
 
 When('der User einen Einkaufszettel löscht', async () => {
   const response = await get('http://localhost:3000/overview', {
-    headers: {
-      authorization: this.accessToken,
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders(this.accessToken)
   })
   const lists = await response.data.shoppingLists
   this.deletedId = lists[0].id
   expect(this.deletedId).not.to.be.undefined
   await del(`http://localhost:3000/overview/${this.deletedId}`, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: this.accessToken
-    }
+    headers: createHeaders(this.accessToken)
   })
 });
 
 
 Then('taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen', async () => {
   const response = await get('http://localhost:3000/overview', {
-    headers: {
-      authorization: this.accessToken,
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders(this.accessToken)
   })
   const lists = await response.data.shoppingLists;
   const deletedId = this.deletedId
@@ -89,10 +88,7 @@ When('der User einen neuen Einkaufszettel anlegt', async () => {
 
 Then('taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel auf', async () => {
   const response = await get('http://localhost:3000/overview', {
-    headers: {
-      authorization: this.accessToken,
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders(this.accessToken)
   })
   const lists = await response.data.shoppingLists
   const lastNewId = this.lastNewShoppingList.id

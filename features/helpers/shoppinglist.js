@@ -8,7 +8,8 @@ const login = async (self) => {
     password: 'll11OO!!'
   }, {
     headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET'
+      'x-shared-shopper-secret': 'FAKE_SECRET',
+      'Content-Type': 'application/json'
     }
   })
   self.accessToken = await loginResponse.data.accessToken
@@ -21,7 +22,8 @@ const createShoppingList = async (self) => {
   }, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+      authorization: self.accessToken,
+      'Content-Type': 'application/json'
     }
   })
   self.lastNewShoppingList = await response.data
@@ -44,7 +46,8 @@ const createShoppingListEntry = async (self, label = 'Kaffe') => {
   }, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+      authorization: self.accessToken,
+      'Content-Type': 'application/json'
     }
   })
   self.lastNewShoppingListEntry = await response.data

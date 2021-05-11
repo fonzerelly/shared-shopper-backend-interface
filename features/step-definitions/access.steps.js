@@ -16,6 +16,11 @@ const {
 
 const descriptiveStep = () => {}
 
+const createHeaders = () => ({
+  'x-shared-shopper-secret': 'FAKE_SECRET',
+  'Content-Type': 'application/json'
+})
+
 let scenarioLabel
 Before((scenario) => {
   scenarioLabel = scenario.pickle.name
@@ -26,9 +31,7 @@ When('register mit einer validen email und einem validen passwort aufgerufen wir
     email: 'hab@ich.net',
     password: '11aaBB!!'
   },{
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders()
   })
   this[scenarioLabel] = await registerResponse.status
 });
@@ -44,9 +47,7 @@ Given('der Kunde hat sich zuvor registriert', descriptiveStep);
 
 When('validate mit dem Token aufgerufen wird', async () => {
   await get('http://localhost:3000/validate/123abc456', {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders()
   })
 });
 
@@ -59,9 +60,7 @@ When('der Kunde sich mit seinem Passwort anmeldet', async () => {
     email: 'hab@ich.net',
     password: '11aaBB!!'
   },{
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET'
-    }
+    headers: createHeaders()
   })
   this[scenarioLabel] = {
     status: await loginResponse.status,
