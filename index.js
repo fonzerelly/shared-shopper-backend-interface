@@ -145,7 +145,13 @@ router.use((req, res, next) => {
 })
 
 router.get('/overview', (req, res) => {
-  res.send(db)
+  const result = db.shoppingLists.map((shoppingList) => {
+    return {
+      id: shoppingList.id,
+      name: shoppingList.name
+    }
+  })
+  res.send(result)
 })
 
 router.delete('/overview/:listId', (req, res) => {

@@ -8,6 +8,7 @@ const del = axios.delete
 const { expect } = require('chai')
 
 const { login, createShoppingList } = require('../helpers/shoppinglist')
+const { readOverview, deleteShoppinglist } = require('../helpers/overview')
 
 const descriptiveStep = () => {}
 
@@ -20,10 +21,18 @@ const createHeaders = (accessToken) => ({
 let scenarioLabel
 Before((scenario) => {
   scenarioLabel = scenario.pickle.name
+  this[scenarioLabel] = {}
 })
 
+const extendThis = (newData) => {
+  this[scenarioLabel] = {
+    ...this[scenarioLabel],
+    ...newData
+  }
+}
+
 Given('der User hat sich eingeloggt um mit der Übersicht zu arbeiten', async () =>{
-  await login(this)
+  extendThis(await login())
 });
 
 
@@ -31,66 +40,62 @@ Given('der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt'
 
 
 Given('der User verwendet einen ungültigen accessToken', async () => {
-  this.accessToken =
-    this.accessToken
+  const { accessToken } = this[scenarioLabel]
+  extendThis({
+    accessToken: accessToken
       .split('')
       .reverse()
       .join('')
+  })
 });
 
 
 When('der User die Liste aller seiner Einkaufszetten einsehen will', async () => {
-  try {
-    const response = await get('http://localhost:3000/overview', {
-      headers: createHeaders(this.accessToken)
-    })
-    this.lastStatus = await response.status
-    this.result = await response.data
-  } catch (error) {
-    this.lastStatus = error.response.status
-  }
+  const { accessToken } = this[scenarioLabel]
+  extendThis(await readOverview(accessToken))
 });
 
 Then('schlägt der overview-Aufruf fehl', async () => {
-  expect(this.lastStatus).to.equal(401)
+  expect(this[scenarioLabel].status).to.equal(401)
 })
 
 Then('sieht er die Titel aller seiner Einkaufszettel', async () => {
-  expect(this.lastStatus).to.equal(200)
-  expect(this.result.shoppingLists.length).to.greaterThan(0)
+  const { status, overview } = this[scenarioLabel]
+  expect(status).to.equal(200)
+  expect(overview.length).to.greaterThan(0)
+  overview.forEach((shoppinglist) => {
+    const shoppinglistKeys = Object.keys(shoppinglist).sort()
+    expect(shoppinglistKeys).to.eql(['id', 'name'])
+  })
+
 });
 
 When('der User einen Einkaufszettel löscht', async () => {
-  const response = await get('http://localhost:3000/overview', {
-    headers: createHeaders(this.accessToken)
-  })
-  const lists = await response.data.shoppingLists
-  this.deletedId = lists[0].id
-  expect(this.deletedId).not.to.be.undefined
-  await del(`http://localhost:3000/overview/${this.deletedId}`, {
-    headers: createHeaders(this.accessToken)
-  })
+  const { accessToken } = this [scenarioLabel]
+  const { overview } = await readOverview(accessToken)
+  const deletedId = overview[0].id
+  expect(deletedId).not.to.be.undefined
+  extendThis({deletedId})
+  
+  extendThis(await deleteShoppinglist(accessToken, deletedId))
 });
 
 
 Then('taucht der Titel des Einkaufszettel nicht mehr in der Übersicht aufgerufen', async () => {
-  const response = await get('http://localhost:3000/overview', {
-    headers: createHeaders(this.accessToken)
-  })
-  const lists = await response.data.shoppingLists;
+  const { accessToken } = this[scenarioLabel]
+  const { overview } = await readOverview(accessToken)
   const deletedId = this.deletedId
-  expect(lists.find(list => list.id === deletedId)).to.be.undefined
+  expect(overview.find(list => list.id === deletedId)).to.be.undefined
 });
 
 When('der User einen neuen Einkaufszettel anlegt', async () => {
-  await createShoppingList(this)
+  const { accessToken } = this[scenarioLabel]
+  extendThis(await createShoppingList(accessToken))
 });
 
 Then('taucht der Titel des Einkaufszettel in der Übersicht der Einkaufszettel auf', async () => {
-  const response = await get('http://localhost:3000/overview', {
-    headers: createHeaders(this.accessToken)
-  })
-  const lists = await response.data.shoppingLists
-  const lastNewId = this.lastNewShoppingList.id
-  expect(lists.find((list) => list.id === lastNewId)).not.to.be.undefined
+  const { accessToken, newShoppinglist } = this[scenarioLabel]
+  const { overview } = await readOverview(accessToken)
+  const lastNewId = newShoppinglist.id
+  expect(overview.find((list) => list.id === lastNewId)).not.to.be.undefined
 });

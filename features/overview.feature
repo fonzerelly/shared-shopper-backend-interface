@@ -2,13 +2,13 @@
 Funktionalität: Überblick über alle bereits erstellten Einkaufszettel
 
   Grundlage:
-  Angenommen der User hat sich eingeloggt um mit der Übersicht zu arbeiten
-  Angenommen der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt
+    Angenommen der User hat sich eingeloggt um mit der Übersicht zu arbeiten
+    Angenommen der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt
 
   Szenario: Als User möchte ich sicher sein, dass nur ich meine Inhalte sehen kann
-  Angenommen der User verwendet einen ungültigen accessToken
-  Wenn der User die Liste aller seiner Einkaufszetten einsehen will
-  Dann schlägt der overview-Aufruf fehl
+    Angenommen der User verwendet einen ungültigen accessToken
+    Wenn der User die Liste aller seiner Einkaufszetten einsehen will
+    Dann schlägt der overview-Aufruf fehl
 
   Szenario: Als User möchte ich eine Übersicht aller meiner bisherigen Einkaufszettel erhalten
     Wenn der User die Liste aller seiner Einkaufszetten einsehen will

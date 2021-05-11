@@ -2,7 +2,7 @@ const axios = require('axios')
 const { post, get, put } = axios
 const del = axios.delete
 
-const login = async (self) => {
+const login = async () => {
   const loginResponse = await post('http://localhost:3000/login',{
     email: 'hab@ich.net',
     password: 'll11OO!!'
@@ -12,92 +12,121 @@ const login = async (self) => {
       'Content-Type': 'application/json'
     }
   })
-  self.accessToken = await loginResponse.data.accessToken
+  return await loginResponse.data
 }
 
-const createShoppingList = async (self) => {
+const createShoppingList = async (accessToken) => {
   const newShoppingListName = new Date().toISOString()
   const response = await post('http://localhost:3000/overview/add', {
     name: newShoppingListName
   }, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken,
+      authorization: accessToken,
       'Content-Type': 'application/json'
     }
   })
-  self.lastNewShoppingList = await response.data
+  return {
+    status: await response.status,
+    newShoppinglist: await response.data
+  }
 }
 
-const readShoppingList = async (self) => {
-  const response = await get (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}`, {
+const readShoppingList = async (accessToken, shoppingListId) => {
+  const response = await get (`http://localhost:3000/shoppinglist/${shoppingListId}`, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+      authorization: accessToken
     }
   })
-  self.lastNewShoppingListContent = await response.data
+  
+  return {
+    status: await response.status,
+    shoppinglistContent: await response.data
+  }
 }
 
-const createShoppingListEntry = async (self, label = 'Kaffe') => {
-  const response = await post (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/add`, {
+const createShoppingListEntry = async (accessToken, shoppingListId, label = 'Kaffe') => {
+  const response = await post (`http://localhost:3000/shoppinglist/${shoppingListId}/add`, {
     label,
     count: 1
   }, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken,
+      authorization: accessToken,
       'Content-Type': 'application/json'
     }
   })
-  self.lastNewShoppingListEntry = await response.data
+  return {
+    status: await response.status,
+    newShoppinglistEntry: await response.data
+  }
 }
 
-const removeShoppingListEntry = async (self) => {
-  const response = await del (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${self.lastNewShoppingListEntry.id}`, {
+const removeShoppingListEntry = async (accessToken, shoppingListId, entryId) => {
+  const response = await del (`http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}`, {
     headers: {
       'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+      authorization: accessToken
     }
   })
+  return { status: await response.status }
 }
 
-const moveUpShoppingListEntry = async (self) => {
-  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${self.lastNewShoppingListEntry.id}/moveUp`, null, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+const moveUpShoppingListEntry = async (accessToken, shoppingListId, entryId) => {
+  const response = await put (
+    `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/moveUp`, 
+    null, 
+    {
+      headers: {
+        'x-shared-shopper-secret': 'FAKE_SECRET',
+        authorization: accessToken
+      }
     }
-  })
+  )
+  return { status: await response.status }
 }
 
-const moveDownShoppingListEntry = async (self, id) => {
-  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${id}/moveDown`, null, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+const moveDownShoppingListEntry = async (accessToken, shoppingListId, entryId) => {
+  const response = await put (
+    `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/moveDown`, 
+    null, 
+    {
+      headers: {
+        'x-shared-shopper-secret': 'FAKE_SECRET',
+        authorization: accessToken
+      }
     }
-  })
+  )
+  return { status: await response.status }
 }
 
-const markShoppingListEntry = async (self, id) => {
-  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${id}/mark`, null, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+const markShoppingListEntry = async (accessToken, shoppingListId, entryId) => {
+  const response = await put (
+    `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/mark`, 
+    null, 
+    {
+      headers: {
+        'x-shared-shopper-secret': 'FAKE_SECRET',
+        authorization: accessToken
+      }
     }
-  })
+  )
+  return { status: await response.status }
 }
 
-const setShoppingListEntriesCount = async (self, newCount) => {
-  const response = await put (`http://localhost:3000/shoppinglist/${self.lastNewShoppingList.id}/${self.lastNewShoppingListEntry.id}/count`, {
-    newCount
-  }, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: self.accessToken
+const setShoppingListEntriesCount = async (accessToken, shoppingListId, entryId, newCount) => {
+  const response = await put (
+    `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/count`, 
+    { newCount }, 
+    {
+      headers: {
+        'x-shared-shopper-secret': 'FAKE_SECRET',
+        authorization: accessToken
+      }
     }
-  })
+  )
+  return { status: await response.status }
 }
 
 module.exports = {
