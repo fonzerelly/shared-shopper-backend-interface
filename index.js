@@ -2,51 +2,20 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
-const log = (data) => {
-  const str = Object.keys(data).reduce((s, key) => {
-    return s += ` ${key}: ${data[key]}`
-  }, '')
-  const d = new Date()
-  
-  console.log(`${d.toISOString()}${str}`)
-}
-
+const { log } = require('./src/log/log')
+const { enforceContentTypeHeader } = require('./src/middlewares/enforceContentTypeHeader')
+const { secretGuard } = require('./src/middlewares/secret-guard')
+const { logQueries } = require('./src/middlewares/log-queries')
 
 app.use(cors())
 
 app.use(express.json({limit: '20mb'}))
 
-//enforce content-type header
-app.use((req, res, next) => {
-  if (req.method === 'POST') {
-    const lowerCasedHeaders = Object.keys(req.headers).reduce((headers, key) => {
-      headers[key.toLowerCase()] = req.headers[key]
-      return headers
-    }, {})
-    if (
-      Object.keys(lowerCasedHeaders).includes('content-type') &&
-      lowerCasedHeaders['content-type'] === 'application/json'
-    ) {
-      return next()
-    }
-    log({error: `Es wurde kein Content-Type-Header: application/json mitgegeben.`})
-    return res.sendStatus(400)
-  }
-  return next()
-})
+app.use(enforceContentTypeHeader)
 
-app.use((req, res, next) => {
-  if (!req.headers['x-shared-shopper-secret']) {
-    log({error: 'Es wurde kein x-shared-shopper-secret angegeben'})
-    return res.status(403).send({msg: 'error'})
-  }
-  return next()
-})
+app.use(secretGuard)
 
-app.use((req, _, next) => {
-  log({method: req.method, url: req.url, body: JSON.stringify(req.body)})
-  next()
-})
+app.use(logQueries)
 
 app.get('/health', function (req, res) {
   res.send({
