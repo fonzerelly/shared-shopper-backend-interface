@@ -1,7 +1,7 @@
 const { log } = require('../log/log')
 
 const enforceContentTypeHeader = (req, res, next) => {
-  if (req.method === 'POST') {
+  if (req.method === 'POST' || req.method === 'PUT') {
     const lowerCasedHeaders = Object.keys(req.headers).reduce((headers, key) => {
       headers[key.toLowerCase()] = req.headers[key]
       return headers

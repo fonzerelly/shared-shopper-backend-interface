@@ -2,6 +2,12 @@ const axios = require('axios')
 const { post, get, put } = axios
 const del = axios.delete
 
+const createHeaders = accessToken => ({
+  'x-shared-shopper-secret': 'FAKE_SECRET',
+  authorization: accessToken,
+  'Content-Type': 'application/json'
+})
+
 const login = async () => {
   const loginResponse = await post('http://localhost:3000/login',{
     email: 'hab@ich.net',
@@ -20,11 +26,7 @@ const createShoppingList = async (accessToken) => {
   const response = await post('http://localhost:3000/overview/add', {
     name: newShoppingListName
   }, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: accessToken,
-      'Content-Type': 'application/json'
-    }
+    headers: createHeaders(accessToken)
   })
   return {
     status: await response.status,
@@ -51,11 +53,7 @@ const createShoppingListEntry = async (accessToken, shoppingListId, label = 'Kaf
     label,
     count: 1
   }, {
-    headers: {
-      'x-shared-shopper-secret': 'FAKE_SECRET',
-      authorization: accessToken,
-      'Content-Type': 'application/json'
-    }
+    headers: createHeaders(accessToken)
   })
   return {
     status: await response.status,
@@ -78,10 +76,7 @@ const moveUpShoppingListEntry = async (accessToken, shoppingListId, entryId) => 
     `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/moveUp`, 
     null, 
     {
-      headers: {
-        'x-shared-shopper-secret': 'FAKE_SECRET',
-        authorization: accessToken
-      }
+      headers: createHeaders(accessToken)
     }
   )
   return { status: await response.status }
@@ -92,10 +87,7 @@ const moveDownShoppingListEntry = async (accessToken, shoppingListId, entryId) =
     `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/moveDown`, 
     null, 
     {
-      headers: {
-        'x-shared-shopper-secret': 'FAKE_SECRET',
-        authorization: accessToken
-      }
+      headers: createHeaders(accessToken)
     }
   )
   return { status: await response.status }
@@ -106,10 +98,7 @@ const markShoppingListEntry = async (accessToken, shoppingListId, entryId) => {
     `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/mark`, 
     null, 
     {
-      headers: {
-        'x-shared-shopper-secret': 'FAKE_SECRET',
-        authorization: accessToken
-      }
+      headers: createHeaders(accessToken)
     }
   )
   return { status: await response.status }
@@ -120,10 +109,7 @@ const setShoppingListEntriesCount = async (accessToken, shoppingListId, entryId,
     `http://localhost:3000/shoppinglist/${shoppingListId}/${entryId}/count`, 
     { newCount }, 
     {
-      headers: {
-        'x-shared-shopper-secret': 'FAKE_SECRET',
-        authorization: accessToken
-      }
+      headers: createHeaders(accessToken)
     }
   )
   return { status: await response.status }

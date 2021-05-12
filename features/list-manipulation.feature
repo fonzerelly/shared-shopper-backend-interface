@@ -6,6 +6,8 @@ Funktionalität: Einkaufszettel manipulieren
   Angenommen der User hat bereits einige Einkaufszettel in der Vergangenheit angelegt
   Angenommen der User hat einen neuen Einkaufszettel angelegt
 
+
+  @focus
   Szenario: Einkaufszettel anzeigen
     Wenn der User sich den neuen Einkaufszettel anzeigen lässt
     Dann ist der Einkaufszettel leer
