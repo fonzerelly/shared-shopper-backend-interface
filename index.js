@@ -6,15 +6,15 @@ const { log } = require('./src/log/log')
 const { enforceContentTypeHeader } = require('./src/middlewares/enforceContentTypeHeader')
 const { secretGuard } = require('./src/middlewares/secret-guard')
 const { logQueries } = require('./src/middlewares/log-queries')
+const { authenticationGuard } = require('./src/middlewares/authentication-guard')
 
+// third party middlewares
 app.use(cors())
-
 app.use(express.json({limit: '20mb'}))
 
+// own middlewares
 app.use(enforceContentTypeHeader)
-
 app.use(secretGuard)
-
 app.use(logQueries)
 
 app.get('/health', function (req, res) {
@@ -42,10 +42,14 @@ app.get('/validate/:validateToken', (req, res) => {
   res.sendStatus(200)
 })
 
-let accessToken
+// let accessToken
 let db
+const dynamicData = {
+  accessToken: null,
+  shoppingLists: []
+}
 app.post('/login', (req, res) => {
-  accessToken = String(Math.ceil(Math.random()*10000000))
+  dynamicData.accessToken = String(Math.ceil(Math.random()*10000000))
   db = {
     shoppingLists: [
       {
@@ -97,21 +101,15 @@ app.post('/login', (req, res) => {
       }
     ]
   }
-  log({message: `User ${req.body.email} ist eingeloggt und verwendet den accessToken ${accessToken}.`})
+  log({message: `User ${req.body.email} ist eingeloggt und verwendet den accessToken ${dynamicData.accessToken}.`})
   log({message: `Datenbank mit ${db.shoppingLists.length} Einträgen wurde geladen.`})
   res.send({
-    accessToken
+    accessToken: dynamicData.accessToken
   })
 })
 
 const router = express.Router()
-router.use((req, res, next) => {
-  if (req.headers.authorization === accessToken) {
-    return next()
-  }
-  log({error: 'Es wurde kein authorization header angegeben.'})
-  return res.sendStatus(401)
-})
+router.use(authenticationGuard(dynamicData))
 
 router.get('/overview', (req, res) => {
   const result = db.shoppingLists.map((shoppingList) => {
