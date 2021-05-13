@@ -137,3 +137,5 @@ Then('steht die Anzahl des Eintrags auf {int}', async (newCount) => {
   const {shoppinglistContent} = this[scenarioLabel]
   expect(shoppinglistContent[0].count).to.equal(newCount)
 });
+
+//some commit to test
