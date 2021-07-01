@@ -8,6 +8,8 @@ const { secretGuard } = require('./src/middlewares/secret-guard')
 const { logQueries } = require('./src/middlewares/log-queries')
 const { authenticationGuard } = require('./src/middlewares/authentication-guard')
 
+const PORT = process.env.PORT || 5000
+
 // third party middlewares
 app.use(cors())
 app.use(express.json({limit: '20mb'}))
@@ -232,4 +234,4 @@ router.put('/shoppinglist/:shoppingListId/:entryId/count', (req, res) => {
 
 app.use('/', router)
  
-app.listen(3000)
+app.listen(PORT, () => console.log(`Listing to PORT: ${PORT}`))
